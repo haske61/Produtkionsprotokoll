@@ -14,16 +14,16 @@ class ProductionLogForm
     {
         return $schema
             ->components([
-                Select::make('delivery_id')
-                    ->label('Lieferung')
-                    ->relationship('delivery')
-                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->date->format('d.m.Y')} – {$record->supplier} ({$record->quantity_kg} kg)")
-                    ->searchable()
-                    ->preload()
-                    ->required(),
                 Select::make('production_line_id')
                     ->label('Produktionslinie')
                     ->relationship('productionLine', 'name')
+                    ->required(),
+                Select::make('delivery_id')
+                    ->label('Lieferung')
+                    ->relationship('delivery')
+                    ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->date->format('d.m.Y')} – {$record->crm_nummer} ({$record->quantity_kg} kg)")
+                    ->searchable()
+                    ->preload()
                     ->required(),
                 DatePicker::make('date')
                     ->label('Datum')

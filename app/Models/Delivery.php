@@ -9,7 +9,9 @@ class Delivery extends Model
 {
     protected $fillable = [
         'date',
-        'supplier',
+        'crm_nummer',
+        'origin',
+        'silo',
         'quantity_kg',
         'notes',
     ];

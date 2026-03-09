@@ -18,9 +18,16 @@ class DeliveriesTable
                     ->label('Datum')
                     ->date('d.m.Y')
                     ->sortable(),
-                TextColumn::make('supplier')
-                    ->label('Lieferant')
+                TextColumn::make('crm_nummer')
+                    ->label('CRM-Nummer')
                     ->searchable(),
+                TextColumn::make('origin')
+                    ->label('Herkunft')
+                    ->searchable(),
+                TextColumn::make('silo')
+                    ->label('Silo')
+                    ->formatStateUsing(fn (string $state): string => "Silo $state")
+                    ->sortable(),
                 TextColumn::make('quantity_kg')
                     ->label('Menge (kg)')
                     ->numeric(decimalPlaces: 2)

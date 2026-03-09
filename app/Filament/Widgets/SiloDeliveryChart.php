@@ -3,14 +3,14 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Delivery;
+use App\Models\ProductionLog;
 use App\Models\SiloReset;
 use Filament\Widgets\ChartWidget;
-use Illuminate\Support\Collection;
 
 class SiloDeliveryChart extends ChartWidget
 {
     protected ?string $heading = 'Silobestand gesamt (kg)';
-    protected static ?int $sort = 4;
+    protected static ?int $sort = 2;
     protected ?string $maxHeight = '300px';
 
     protected function getData(): array
@@ -19,14 +19,18 @@ class SiloDeliveryChart extends ChartWidget
 
         $data = collect();
         foreach ($silos as $silo) {
-            $query = Delivery::where('silo', $silo);
+            $deliveryQuery = Delivery::where('silo', $silo);
+            $productionQuery = ProductionLog::where('silo', $silo);
 
             $lastReset = SiloReset::lastResetFor($silo);
             if ($lastReset) {
-                $query->where('created_at', '>', $lastReset);
+                $deliveryQuery->where('created_at', '>', $lastReset);
+                $productionQuery->where('created_at', '>', $lastReset);
             }
 
-            $data->put($silo, $query->sum('quantity_kg'));
+            $delivered = $deliveryQuery->sum('quantity_kg');
+            $used = $productionQuery->sum('beans_processed_kg');
+            $data->put($silo, max(0, $delivered - $used));
         }
         $labels = array_map(fn ($s) => "Silo $s", $silos);
 

@@ -22,9 +22,19 @@ class ProductionLogsTable
                     ->label('Datum')
                     ->date('d.m.Y')
                     ->sortable(),
-                TextColumn::make('delivery.supplier')
-                    ->label('Lieferant')
-                    ->searchable(),
+                TextColumn::make('shift')
+                    ->label('Schicht')
+                    ->formatStateUsing(fn (?string $state): string => match ($state) {
+                        'frueh' => 'Frühschicht',
+                        'spaet' => 'Spätschicht',
+                        'nacht' => 'Nachtschicht',
+                        default => '-',
+                    })
+                    ->sortable(),
+                TextColumn::make('silo')
+                    ->label('Silo')
+                    ->formatStateUsing(fn (?string $state): string => $state ? "Silo $state" : '-')
+                    ->sortable(),
                 TextColumn::make('beans_processed_kg')
                     ->label('Bohnen (kg)')
                     ->numeric(decimalPlaces: 2)
@@ -40,6 +50,10 @@ class ProductionLogsTable
                     ->numeric(decimalPlaces: 2)
                     ->suffix(' kg')
                     ->sortable(),
+                TextColumn::make('breakdowns_count')
+                    ->label('Störungen')
+                    ->counts('breakdowns')
+                    ->sortable(),
                 TextColumn::make('created_at')
                     ->label('Erstellt')
                     ->dateTime('d.m.Y H:i')
@@ -51,6 +65,13 @@ class ProductionLogsTable
                 SelectFilter::make('production_line_id')
                     ->label('Linie')
                     ->relationship('productionLine', 'name'),
+                SelectFilter::make('shift')
+                    ->label('Schicht')
+                    ->options([
+                        'frueh' => 'Frühschicht',
+                        'spaet' => 'Spätschicht',
+                        'nacht' => 'Nachtschicht',
+                    ]),
             ])
             ->recordActions([
                 EditAction::make(),

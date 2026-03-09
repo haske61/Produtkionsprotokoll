@@ -10,6 +10,7 @@ class ProductionChart extends Widget
 {
     protected string $view = 'filament.widgets.production-chart';
     protected static ?int $sort = 3;
+    protected int | string | array $columnSpan = 'full';
 
     public string $filterMode = 'month';
     public string $filterDate = '';

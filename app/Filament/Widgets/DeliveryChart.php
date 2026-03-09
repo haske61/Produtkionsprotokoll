@@ -10,6 +10,7 @@ class DeliveryChart extends Widget
 {
     protected string $view = 'filament.widgets.delivery-chart';
     protected static ?int $sort = 2;
+    protected int | string | array $columnSpan = 1;
 
     public string $filterMode = 'month';
     public string $filterDate = '';
